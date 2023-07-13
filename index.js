@@ -6,9 +6,6 @@ app.set('view engine', 'ejs');
 
 app.use(express.static('./src/public'));
 
-app.get('/', function(req, res) {
-    res.render('../src/views/index');
-});
 
 
 //---------------------------
@@ -25,13 +22,22 @@ connection.connect(function(err) {
     console.log("Connected!");
 });
 
+//connection.query('SELECT * FROM users;', function (error, results, fields) {
+//    if (error) throw error;
+//    for(i = 0; i < results.length; i++) {
+//        console.log('Lista: ', results[i]);
+//    }
+//});
 
-connection.query('SELECT * FROM users;', function (error, results, fields) {
-    if (error) throw error;
-    for(i = 0; i < results.length; i++) {
-        console.log('Lista: ', results[i]);
-    }
+
+app.get('/', function(req, res) {
+    connection.query('SELECT * FROM users', function (err, result) {
+        if (err) throw err;
+        res.render('../src/views/index', {data: result});
+    });
 });
+
+
 
 
 app.listen(3000, function() {
